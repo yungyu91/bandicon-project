@@ -26,8 +26,8 @@ ENV_PATH = os.path.join(BASE_DIR, ".env")
 # 3. 전체 경로를 사용해 .env 파일을 읽어들입니다.
 load_dotenv(dotenv_path=ENV_PATH)
 
-from backend import crud, models, schemas, security # <- 이렇게 수정해주세요.
-from backend.database import engine, get_db, SessionLocal
+from . import crud, models, schemas, security
+from .database import engine, get_db, SessionLocal
 
 # ---------------- 환경 변수 ----------------
 ADMIN_USERNAME = os.getenv("BANDICON_ADMIN_USERNAME", "admin")
