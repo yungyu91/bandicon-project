@@ -96,7 +96,6 @@ def bootstrap_admin():
             db.close()
     else:
         print(f"[INFO] Instance {instance_id} is not the bootstrap instance, skipping admin creation.")
-
 def get_current_user(db: Session, nickname: str):
     user = crud.get_user_by_nickname(db, nickname)
     if user is None: raise HTTPException(status_code=404, detail="User not found")
