@@ -5,7 +5,7 @@ from sqlalchemy import or_, desc, and_
 # ✅ 이 부분에 timedelta를 추가해주세요.
 from datetime import datetime, timedelta 
 from typing import List, Optional
-from . import models, schemas, security
+from backend import models, schemas, security
 
 # [중요] 푸시 알림 기능 활성화를 위해 아래 부분을 직접 수정해야 합니다.
 # ------------------------------------------------------------------
