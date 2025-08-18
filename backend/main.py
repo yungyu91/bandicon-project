@@ -53,14 +53,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ✅ 기존의 @app.on_event("startup") 함수를 아래 코드로 완전히 교체합니다.
+# ✅ bootstrap_admin 함수가 아래 내용과 동일한지 확인
 @app.on_event("startup")
 def bootstrap_admin():
-    # Render에서 자동으로 설정해주는 환경 변수를 읽어옵니다.
-    # 여러 워커 중 이 값이 '0'인 워커가 단 하나만 존재합니다.
     instance_id = os.getenv("INSTANCE", "0")
-
-    # 오직 0번 워커만 아래의 admin 계정 생성 로직을 실행하도록 합니다.
     if instance_id == "0":
         print("[INFO] Instance 0 is bootstrapping the admin account...")
         db: Session = SessionLocal()
