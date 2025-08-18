@@ -7,9 +7,9 @@ from sqlalchemy.orm import sessionmaker
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-# ✅ 이 if문을 추가하여, DB 주소에 sslmode=require 옵션을 직접 추가합니다.
+# ✅ 이 if문을 추가하여, DB 접속 방식을 명확히 지정합니다.
 if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
-    DATABASE_URL = f"{DATABASE_URL}?sslmode=require"
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
 
 # ✅ engine 생성 부분에서 connect_args를 삭제합니다.
 engine = create_engine(
