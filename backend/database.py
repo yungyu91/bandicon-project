@@ -1,11 +1,16 @@
 # backend/database.py
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = "sqlite:///./bandicon.db" # SQLite 데이터베이스 파일 경로
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# ✅ 아래 engine 생성 부분을 찾아서, connect_args를 추가해주세요.
+# ✅ postgresql:// 로 시작하는 주소를 postgresql+psycopg2:// 로 바꿔주는 코드 추가
+if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
+
+
 engine = create_engine(
     DATABASE_URL, connect_args={"sslmode": "require"}
 )
