@@ -10,3 +10,4 @@ passlib[bcrypt]==1.7.4
 coolsms-python-sdk
 python-dotenv
 gunicorn
+psycopg2-binary>=2.8 # ✅ 이 부분을 이렇게 수정해주세요.
