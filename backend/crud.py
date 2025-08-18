@@ -7,26 +7,26 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 from backend import models, schemas, security
 
-# [중요] 푸시 알림 기능 활성화를 위해 아래 부분을 직접 수정해야 합니다.
-# ------------------------------------------------------------------
+# [중요] backend/crud.py 상단 수정
+
 import firebase_admin
 from firebase_admin import credentials, messaging
-import os # ✅ os 라이브러리를 import 합니다.
+import os
+import json # ✅ json 라이브러리 추가
 
 # ------------------------------------------------------------------
 
-# ✅ 아래 Firebase 초기화 부분을 새롭고 똑똑한 코드로 교체합니다.
+# ✅ 아래의 새 코드로 교체
+firebase_creds_json_str = os.getenv("FIREBASE_CREDS_JSON")
 
-# 1. crud.py 파일이 위치한 폴더의 절대 경로를 찾습니다.
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# 2. 비밀 키 파일의 전체 경로를 만듭니다.
-CERT_PATH = os.path.join(BASE_DIR, "bandicon-firebase-firebase-adminsdk-fbsvc-b0992bd448.json")
-
-# 3. 전체 경로를 사용해 파일을 읽어들입니다.
-if os.path.exists(CERT_PATH) and not firebase_admin._apps:
-    cred = credentials.Certificate(CERT_PATH)
-    firebase_admin.initialize_app(cred)
+if firebase_creds_json_str and not firebase_admin._apps:
+    try:
+        firebase_creds_dict = json.loads(firebase_creds_json_str)
+        cred = credentials.Certificate(firebase_creds_dict)
+        firebase_admin.initialize_app(cred)
+        print("[INFO] Firebase initialized successfully from environment variable.")
+    except Exception as e:
+        print(f"[ERROR] Failed to initialize Firebase: {e}")
 # ------------------------------------------------------------------
 
 
