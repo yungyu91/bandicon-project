@@ -1,0 +1,11 @@
+# backend/requirements.txt 전체 코드
+
+fastapi
+uvicorn[standard]
+SQLAlchemy
+python-multipart
+firebase-admin
+bcrypt==4.0.1
+passlib[bcrypt]==1.7.4
+coolsms-python-sdk
+python-dotenv

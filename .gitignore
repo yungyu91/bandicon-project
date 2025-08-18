@@ -1,0 +1,16 @@
+# 비밀 정보 파일들
+backend/.env
+backend/*.json
+
+# 파이썬 가상환경 및 캐시 파일
+backend/venv/
+__pycache__/
+*.pyc
+
+# Node.js 의존성 및 빌드 파일
+frontend/node_modules/
+frontend/build/
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
