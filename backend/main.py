@@ -53,37 +53,49 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------------- 서버 시작 시 운영자 계정 자동 보장 ----------------
+# ✅ 기존의 @app.on_event("startup") 함수를 아래 코드로 완전히 교체합니다.
 @app.on_event("startup")
 def bootstrap_admin():
-    db: Session = SessionLocal()
-    try:
-        user = crud.get_user_by_username(db, ADMIN_USERNAME)
-        if not user:
-            hashed = security.get_password_hash(ADMIN_PASSWORD)
-            user = models.User(
-                username=ADMIN_USERNAME,
-                hashed_password=hashed,
-                nickname=ADMIN_NICKNAME,
-                phone="",
-                skills={},
-                role="운영자",
-                status="approved",
-            )
-            db.add(user)
-            db.commit()
-        else:
-            changed = False
-            if user.role != "운영자":
-                user.role = "운영자"; changed = True
-            if user.status != "approved":
-                user.status = "approved"; changed = True
-            if user.nickname != ADMIN_NICKNAME:
-                user.nickname = ADMIN_NICKNAME; changed = True
-            if changed:
+    # Render에서 자동으로 설정해주는 환경 변수를 읽어옵니다.
+    # 여러 워커 중 이 값이 '0'인 워커가 단 하나만 존재합니다.
+    instance_id = os.getenv("INSTANCE", "0")
+
+    # 오직 0번 워커만 아래의 admin 계정 생성 로직을 실행하도록 합니다.
+    if instance_id == "0":
+        print("[INFO] Instance 0 is bootstrapping the admin account...")
+        db: Session = SessionLocal()
+        try:
+            user = crud.get_user_by_username(db, ADMIN_USERNAME)
+            if not user:
+                hashed = security.get_password_hash(ADMIN_PASSWORD)
+                user = models.User(
+                    username=ADMIN_USERNAME,
+                    hashed_password=hashed,
+                    nickname=ADMIN_NICKNAME,
+                    phone="",
+                    skills={},
+                    role="운영자",
+                    status="approved",
+                )
+                db.add(user)
                 db.commit()
-    finally:
-        db.close()
+                print("[INFO] Admin account created successfully.")
+            else:
+                # 기존 admin 계정 정보 업데이트 로직 (이 부분은 동일)
+                changed = False
+                if user.role != "운영자":
+                    user.role = "운영자"; changed = True
+                if user.status != "approved":
+                    user.status = "approved"; changed = True
+                if user.nickname != ADMIN_NICKNAME:
+                    user.nickname = ADMIN_NICKNAME; changed = True
+                if changed:
+                    db.commit()
+                    print("[INFO] Admin account details updated.")
+        finally:
+            db.close()
+    else:
+        print(f"[INFO] Instance {instance_id} is not the bootstrap instance, skipping admin creation.")
 
 def get_current_user(db: Session, nickname: str):
     user = crud.get_user_by_nickname(db, nickname)
