@@ -1,7 +1,7 @@
 // [전체 코드] src/api/api.js
 import axios from "axios";
 
-export const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:8000";
+export const API_BASE = "https://bandicon-project.onrender.com";
 export const ADMIN_TOKEN = "abc123-VERY-LONG-RANDOM";
 
 // ---------- 공용 요청 ----------
