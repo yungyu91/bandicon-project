@@ -1,52 +1,40 @@
 /* eslint-disable no-restricted-globals */
 
-// 이 코드는 서비스 워커가 캐시(임시 저장)할 파일들을 관리하고,
-// 오프라인일 때 캐시된 파일을 보여주는 등의 역할을 합니다.
-// Create React App의 기본 PWA 설정에서 가져온 표준 코드입니다.
+import { clientsClaim } from 'workbox-core';
+import { ExpirationPlugin } from 'workbox-expiration';
+import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
+import { registerRoute } from 'workbox-routing';
+import { StaleWhileRevalidate } from 'workbox-strategies';
 
-const CACHE_NAME = 'bandicon-cache-v1';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/logo192.png',
-  '/logo512.png',
-];
+clientsClaim();
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
-  );
-});
+// self.__WB_MANIFEST는 빌드 과정에서 Workbox에 의해 자동으로 생성되고 주입됩니다.
+// 이 부분이 "Can't find self.__WB_MANIFEST" 오류를 해결하는 핵심입니다.
+precacheAndRoute(self.__WB_MANIFEST);
 
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      })
-  );
-});
+const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$');
+registerRoute(
+  ({ request, url }) => {
+    if (request.mode !== 'navigate') {
+      return false;
+    }
+    if (url.pathname.startsWith('/_')) {
+      return false;
+    }
+    if (url.pathname.match(fileExtensionRegexp)) {
+      return false;
+    }
+    return true;
+  },
+  createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
+);
 
-self.addEventListener('activate', (event) => {
-  const cacheWhitelist = [CACHE_NAME];
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-          return null;
-        })
-      );
-    })
-  );
-});
+registerRoute(
+  ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.png'),
+  new StaleWhileRevalidate({
+    cacheName: 'images',
+    plugins: [
+      new ExpirationPlugin({ maxEntries: 50 }),
+    ],
+  })
+);
