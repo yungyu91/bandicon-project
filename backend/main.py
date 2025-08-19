@@ -47,6 +47,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 origins = [
     "http://localhost:3000", "http://127.0.0.1:3000",
     "http://localhost:5173", "http://127.0.0.1:5173",
+    "https://bandicon.netlify.app", # <-- 본인의 Netlify 주소를 여기에 추가!
 ]
 app.add_middleware(
     CORSMiddleware,
