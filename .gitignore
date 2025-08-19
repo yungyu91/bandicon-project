@@ -1,16 +1,75 @@
-# 비밀 정보 파일들
-backend/.env
-backend/*.json
+# .gitignore
 
-# 파이썬 가상환경 및 캐시 파일
-backend/venv/
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 
-# Node.js 의존성 및 빌드 파일
-frontend/node_modules/
-frontend/build/
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+# Usually these files are created by running PyInstaller with Python 3.
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Secrets
+# !! 중요: Firebase 키 같은 비밀 파일은 절대 올리지 마세요.
+*.json 
+
+# IDE settings
+.idea/
+.vscode/
+
+# OS-generated files
 .DS_Store
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
