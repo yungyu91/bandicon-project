@@ -1,6 +1,6 @@
 // [전체 코드] src/App.js
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Routes, Route, Link, useNavigate, useLocation } from "react-router-dom";
 
 import RoomList from "./features/rooms/RoomList";
@@ -46,7 +46,20 @@ const AppContent = () => {
     }
   });
   const [notificationCounts, setNotificationCounts] = useState({ chat: 0, profile: 0, etc: 0 });
+  // ===== 아래 코드를 여기에 추가하세요 =====
+  const [installPrompt, setInstallPrompt] = useState(null);
 
+  useEffect(() => {
+    const handler = e => {
+      e.preventDefault();
+      console.log("we are installable");
+      setInstallPrompt(e);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+  // ===== 여기까지 추가 =====
   const checkAlerts = useCallback(async (currentUser) => {
       if (!currentUser?.nickname) return;
       try {
@@ -183,9 +196,11 @@ const AppContent = () => {
         <Routes>
           {!user ? (
             <>
-              <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
+              {/* ===== 여기를 수정하세요 ===== */}
+              <Route path="/login" element={<LoginForm onLogin={handleLogin} installPrompt={installPrompt} />} />
               <Route path="/signup" element={<SignupForm onLogin={handleLogin} />} />
-              <Route path="*" element={<LoginForm onLogin={handleLogin} />} />
+              {/* ===== 여기도 수정하세요 ===== */}
+              <Route path="*" element={<LoginForm onLogin={handleLogin} installPrompt={installPrompt} />} />
             </>
           ) : (
             <>

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { apiPost } from "../../api/api";
 
-const LoginForm = ({ onLogin }) => {
+const LoginForm = ({ onLogin, installPrompt }) => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -47,6 +47,18 @@ const LoginForm = ({ onLogin }) => {
           />
         </div>
         {error && <p style={{ color: "red", textAlign: 'center' }}>{error}</p>}
+                {/* ===== 여기부터 추가 ===== */}
+        {installPrompt && (
+          <button 
+            type="button" 
+            onClick={() => installPrompt.prompt()}
+            className="btn btn-secondary"
+            style={{width: '100%', marginTop: '10px', background: '#4caf50', color: 'white'}}
+          >
+            📱 앱 설치하고 편하게 사용하기
+          </button>
+        )}
+        {/* ===== 여기까지 추가 ===== */}
         <button type="submit" className="btn btn-primary" style={{width: '100%', marginTop: '10px'}}>
           로그인
         </button>
