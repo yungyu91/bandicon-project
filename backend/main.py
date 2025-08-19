@@ -29,6 +29,9 @@ load_dotenv(dotenv_path=ENV_PATH)
 from backend import crud, models, schemas, security
 from backend.database import engine, get_db, SessionLocal
 
+from sqlalchemy import text
+import time
+
 # ---------------- 환경 변수 ----------------
 ADMIN_USERNAME = os.getenv("BANDICON_ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD = os.getenv("BANDICON_ADMIN_PASSWORD", "changeme")
@@ -53,43 +56,54 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ✅ bootstrap_admin 함수가 아래 내용과 동일한지 확인
 @app.on_event("startup")
 def bootstrap_admin():
     instance_id = os.getenv("INSTANCE", "0")
     if instance_id == "0":
         print("[INFO] Instance 0 is bootstrapping the admin account...")
-        db: Session = SessionLocal()
-        try:
-            user = crud.get_user_by_username(db, ADMIN_USERNAME)
-            if not user:
-                hashed = security.get_password_hash(ADMIN_PASSWORD)
-                user = models.User(
-                    username=ADMIN_USERNAME,
-                    hashed_password=hashed,
-                    nickname=ADMIN_NICKNAME,
-                    phone="",
-                    skills={},
-                    role="운영자",
-                    status="approved",
-                )
-                db.add(user)
-                db.commit()
-                print("[INFO] Admin account created successfully.")
-            else:
-                # 기존 admin 계정 정보 업데이트 로직 (이 부분은 동일)
-                changed = False
-                if user.role != "운영자":
-                    user.role = "운영자"; changed = True
-                if user.status != "approved":
-                    user.status = "approved"; changed = True
-                if user.nickname != ADMIN_NICKNAME:
-                    user.nickname = ADMIN_NICKNAME; changed = True
-                if changed:
+        
+        for i in range(5): # 총 5번 재시도
+            db: Session = SessionLocal()
+            try:
+                # 데이터베이스가 준비되었는지 간단한 쿼리로 확인
+                db.execute(text("SELECT 1"))
+                print("[INFO] Database connection successful.")
+                
+                user = crud.get_user_by_username(db, ADMIN_USERNAME)
+                if not user:
+                    hashed = security.get_password_hash(ADMIN_PASSWORD)
+                    user = models.User(
+                        username=ADMIN_USERNAME,
+                        hashed_password=hashed,
+                        nickname=ADMIN_NICKNAME,
+                        phone="",
+                        skills={},
+                        role="운영자",
+                        status="approved",
+                    )
+                    db.add(user)
                     db.commit()
-                    print("[INFO] Admin account details updated.")
-        finally:
-            db.close()
+                    print("[INFO] Admin account created successfully.")
+                else:
+                    # 기존 admin 계정 정보 업데이트 로직
+                    changed = False
+                    if user.role != "운영자":
+                        user.role = "운영자"; changed = True
+                    if user.status != "approved":
+                        user.status = "approved"; changed = True
+                    if user.nickname != ADMIN_NICKNAME:
+                        user.nickname = ADMIN_NICKNAME; changed = True
+                    if changed:
+                        db.commit()
+                        print("[INFO] Admin account details updated.")
+                
+                break # 성공 시 루프 탈출
+                
+            except Exception as e:
+                print(f"[WARN] Failed to connect to DB or bootstrap admin (Attempt {i+1}/5): {e}")
+                time.sleep(3) # 3초 대기 후 재시도
+            finally:
+                db.close()
     else:
         print(f"[INFO] Instance {instance_id} is not the bootstrap instance, skipping admin creation.")
 def get_current_user(db: Session, nickname: str):
