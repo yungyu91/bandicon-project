@@ -3,7 +3,7 @@ from sqlalchemy import (Column, Integer, String, Boolean, JSON, ForeignKey,
                         Table, DateTime, Float)
 from sqlalchemy.orm import relationship, backref
 from datetime import datetime
-from backend.database import Base
+from .database import Base
 
 # --- 연결 테이블들 ---
 friendship_table = Table('friendships', Base.metadata,
