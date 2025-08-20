@@ -6,13 +6,13 @@ import { apiPostForm } from "./api/api";
 
 // TODO: 1. 이 아랫부분을 Firebase 홈페이지에서 복사한 본인의 firebaseConfig 코드로 완전히 교체해주세요.
 const firebaseConfig = {
-  apiKey: "AIzaSyCLAbwv1uqbDNKlioHZE_7OLYPd6xY6Fuw",
-  authDomain: "bandicon-firebase.firebaseapp.com",
-  projectId: "bandicon-firebase",
-  storageBucket: "bandicon-firebase.firebasestorage.app",
-  messagingSenderId: "786387042685",
-  appId: "1:786387042685:web:d37ca1fd984f6e412e0c14"
-};
+  apiKey: "AIzaSyAdTtitDjQaIFA0U78xHLMbZemMp5Nwi3Q",
+  authDomain: "bandicon-final.firebaseapp.com",
+  projectId: "bandicon-final",
+  storageBucket: "bandicon-final.firebasestorage.app",
+  messagingSenderId: "769635544149",
+  appId: "1:769635544149:web:4828129c7e2b7f586438dc"
+}
 
 export const app = initializeApp(firebaseConfig);
 // [수정] export를 추가해서 다른 파일에서 messaging을 사용할 수 있게 합니다.
@@ -28,7 +28,7 @@ export const requestForToken = async (nickname) => {
             // 2. public 폴더의 서비스 워커를 등록하고 토큰을 가져옵니다.
             const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
             const currentToken = await getToken(messaging, { 
-                vapidKey: 'BKz00IesXM4JeEzKs-Xvxehbe9DNMwU40Y8kTSkpkm5RdGSN3QuDziDns13WQACPSNai_je6qwzzCDGh8JcvABc',
+                vapidKey: 'BOWGrbXEHh5BwBlGLRls0yBrz03KG2-piLj2phBUknGkRXDnfizoTkPy7nawz8CecfjOZeK0cW_9VNqCB0mteNk',
                 serviceWorkerRegistration: registration
             });
 

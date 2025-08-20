@@ -3,13 +3,13 @@ importScripts("https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"
 importScripts("https://www.gstatic.com/firebasejs/9.22.1/firebase-messaging-compat.js");
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCLAbwv1uqbDNKlioHZE_7OLYPd6xY6Fuw",
-  authDomain: "bandicon-firebase.firebaseapp.com",
-  projectId: "bandicon-firebase",
-  storageBucket: "bandicon-firebase.firebasestorage.app",
-  messagingSenderId: "786387042685",
-  appId: "1:786387042685:web:d37ca1fd984f6e412e0c14"
-};
+  apiKey: "AIzaSyAdTtitDjQaIFA0U78xHLMbZemMp5Nwi3Q",
+  authDomain: "bandicon-final.firebaseapp.com",
+  projectId: "bandicon-final",
+  storageBucket: "bandicon-final.firebasestorage.app",
+  messagingSenderId: "769635544149",
+  appId: "1:769635544149:web:4828129c7e2b7f586438dc"
+}
 
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
