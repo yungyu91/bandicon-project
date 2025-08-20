@@ -20,15 +20,20 @@ export const messaging = getMessaging(app);
 
 export const requestForToken = async (nickname) => {
     try {
-        const currentToken = await getToken(messaging, { vapidKey: 'BKz00IesXM4JeEzKs-Xvxehbe9DNMwU40Y8kTSkpkm5RdGSN3QuDziDns13WQACPSNai_je6qwzzCDGh8JcvABc' });
-        
+        // public 폴더의 서비스 워커를 명시적으로 등록합니다.
+        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+
+        const currentToken = await getToken(messaging, { 
+            vapidKey: 'BKz00IesXM4JeEzKs-Xvxehbe9DNMwU40Y8kTSkpkm5RdGSN3QuDziDns13WQACPSNai_je6qwzzCDGh8JcvABc',
+            serviceWorkerRegistration: registration // 등록된 워커를 사용하도록 명시
+        });
+
         if (currentToken) {
             console.log('FCM 토큰:', currentToken);
             const formData = new FormData();
             formData.append('token', currentToken);
             formData.append('nickname', nickname);
             await apiPostForm("/register-device", formData);
-            // alert("알림 설정이 완료되었습니다!"); // 성공 시 굳이 alert를 띄울 필요는 없으므로 주석 처리
         } else {
             console.log('푸시 알림 권한이 거부되었습니다.');
         }
