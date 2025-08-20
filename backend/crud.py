@@ -5,7 +5,7 @@ from sqlalchemy import or_, desc, and_
 # ✅ 이 부분에 timedelta를 추가해주세요.
 from datetime import datetime, timedelta 
 from typing import List, Optional
-from . import models, schemas, security
+from backend import models, schemas, security
 
 # backend/crud.py 상단의 Firebase 초기화 부분을 아래 코드로 완전히 교체
 
