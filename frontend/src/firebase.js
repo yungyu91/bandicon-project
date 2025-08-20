@@ -20,14 +20,7 @@ export const messaging = getMessaging(app);
 
 export const requestForToken = async (nickname) => {
     try {
-        // 1. public 폴더에 있는 우리 서비스 워커 파일을 찾아서 등록합니다.
-        const serviceWorkerRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-
-        // 2. 등록된 서비스 워커를 사용해서 토큰을 발급받습니다.
-        const currentToken = await getToken(messaging, { 
-            vapidKey: 'BKz00IesXM4JeEzKs-Xvxehbe9DNMwU40Y8kTSkpkm5RdGSN3QuDziDns13WQACPSNai_je6qwzzCDGh8JcvABc',
-            serviceWorkerRegistration: serviceWorkerRegistration // 이 줄을 추가!
-        });
+        const currentToken = await getToken(messaging, { vapidKey: 'BKz00IesXM4JeEzKs-Xvxehbe9DNMwU40Y8kTSkpkm5RdGSN3QuDziDns13WQACPSNai_je6qwzzCDGh8JcvABc' });
         
         if (currentToken) {
             console.log('FCM 토큰:', currentToken);
