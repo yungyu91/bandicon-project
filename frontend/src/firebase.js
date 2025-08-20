@@ -19,23 +19,30 @@ export const app = initializeApp(firebaseConfig);
 export const messaging = getMessaging(app);
 
 export const requestForToken = async (nickname) => {
+    // 1. 알림 권한을 먼저 직접 요청합니다.
     try {
-        // public 폴더의 서비스 워커를 명시적으로 등록합니다.
-        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+            console.log('알림 권한이 허용되었습니다.');
 
-        const currentToken = await getToken(messaging, { 
-            vapidKey: 'BKz00IesXM4JeEzKs-Xvxehbe9DNMwU40Y8kTSkpkm5RdGSN3QuDziDns13WQACPSNai_je6qwzzCDGh8JcvABc',
-            serviceWorkerRegistration: registration // 등록된 워커를 사용하도록 명시
-        });
+            // 2. public 폴더의 서비스 워커를 등록하고 토큰을 가져옵니다.
+            const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+            const currentToken = await getToken(messaging, { 
+                vapidKey: 'BKz00IesXM4JeEzKs-Xvxehbe9DNMwU40Y8kTSkpkm5RdGSN3QuDziDns13WQACPSNai_je6qwzzCDGh8JcvABc',
+                serviceWorkerRegistration: registration
+            });
 
-        if (currentToken) {
-            console.log('FCM 토큰:', currentToken);
-            const formData = new FormData();
-            formData.append('token', currentToken);
-            formData.append('nickname', nickname);
-            await apiPostForm("/register-device", formData);
+            if (currentToken) {
+                console.log('FCM 토큰:', currentToken);
+                const formData = new FormData();
+                formData.append('token', currentToken);
+                formData.append('nickname', nickname);
+                await apiPostForm("/register-device", formData);
+            } else {
+                console.log('토큰을 발급받지 못했습니다.');
+            }
         } else {
-            console.log('푸시 알림 권한이 거부되었습니다.');
+            console.log('알림 권한이 거부되었습니다.');
         }
     } catch (err) {
         console.error('FCM 토큰 발급 중 오류 발생:', err);

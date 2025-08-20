@@ -6,6 +6,7 @@ import App from "./App";
 import { AlertProvider } from "./context/AlertContext"; // [수정] AlertProvider를 여기서 가져옵니다.
 import "./index.css";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+// serviceWorkerRegistration.register(); // <--- 이 줄을 주석 처리!
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
