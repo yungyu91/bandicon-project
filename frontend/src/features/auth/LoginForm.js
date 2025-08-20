@@ -8,10 +8,11 @@ const LoginForm = ({ onLogin, installPrompt }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
-    try {
+const handleLogin = async (e) => {
+  e.preventDefault();
+  console.log("===== 로그인 버튼 클릭! handleLogin 함수 실행 시작 ====="); // <-- 이 줄을 추가!
+  setError("");
+  try {
       const res = await apiPost("/login", { id, password });
       if (res.id) {
         onLogin(res);
