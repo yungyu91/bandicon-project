@@ -152,7 +152,7 @@
   margin-bottom: 24px;
 }
 
-/* [수정] 채팅 페이지를 위한 스타일 */
+/* [수정] 카카오톡 스타일 채팅을 위한 CSS */
 .chat-page-container {
   flex: 1; 
   display: flex;
@@ -160,20 +160,20 @@
   border: 1px solid var(--light-gray);
   border-radius: 12px;
   overflow: hidden;
-  background: var(--white);
-  margin: -16px; /* 부모의 여백을 무시하고 꽉 채우기 */
-  height: 100%; /* [추가] 부모(.app-main)의 높이를 꽉 채우도록 설정 */
+  background: #ffffff; /* 카카오톡 배경색과 유사하게 변경 */
+  margin: -16px;
+  height: calc(100vh - 88px - 32px); /* 기존 높이 계산 유지 */
 }
 
 .chat-header {
   padding: 15px 20px;
-  border-bottom: 1px solid var(--light-gray);
+  border-bottom: 1px solid rgba(0,0,0,0.1);
   font-weight: bold;
   font-size: 1.1em;
   text-align: center;
   flex-shrink: 0;
   position: relative;
-  background-color: var(--white);
+  background-color: #ffffff; /* 헤더 배경색 */
   z-index: 1;
 }
 .chat-header small {
@@ -188,73 +188,91 @@
   top: 50%;
   left: 20px;
   transform: translateY(-50%);
-  background: #eee;
+  background: rgba(0,0,0,0.1);
   border: none;
   border-radius: 50%;
   width: 30px;
   height: 30px;
   cursor: pointer;
   font-size: 1.2em;
+  color: #333;
 }
 
 .message-list {
   flex-grow: 1;
-  padding: 20px;
+  padding: 20px 10px;
   overflow-y: auto;
-}
-.message-container {
   display: flex;
   flex-direction: column;
-  max-width: 100%;
-  margin-bottom: 8px; /* 말풍선 간격 추가 */
 }
+
+/* 여기가 핵심! 각 메시지 줄은 전체 너비를 차지하는 투명한 flex 컨테이너가 됩니다. */
+.message-container {
+  display: flex; /* 자식 요소(말풍선)를 정렬하기 위해 flex로 설정 */
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* 내 메시지는 오른쪽 정렬 */
+.my-message.message-container {
+  justify-content: flex-end; /* 내용을 오른쪽 끝으로 보냅니다. */
+}
+
+/* 상대방 메시지는 왼쪽 정렬 */
+.their-message.message-container {
+  justify-content: flex-start; /* 내용을 왼쪽 끝으로 보냅니다. */
+}
+
 .message-bubble {
-  width: fit-content;
-  max-width: 85%;
-  padding: 10px 16px;
+  max-width: 70%; /* 말풍선이 너무 길어지지 않도록 최대 너비 설정 */
+  padding: 10px 14px;
   border-radius: 20px;
   font-size: 1rem;
   line-height: 1.5;
   white-space: pre-wrap;
-  overflow-wrap: break-word;
+  overflow-wrap: break-word; /* 긴 단어가 있어도 줄바꿈 처리 */
   text-align: left;
 }
-.my-message {
-  align-self: flex-end;
-  background-color: var(--primary-color);
-  color: white;
-  border-bottom-right-radius: 5px;
+
+/* 내 말풍선 스타일 (카카오톡 노란색) */
+.my-message .message-bubble {
+  background-color: #00a3d2;
+  color: #ffffff;
+  border-bottom-right-radius: 5px; /* 오른쪽 아래 모서리를 뾰족하게 */
 }
-.their-message {
-  align-self: flex-start;
-  background-color: #e5e7eb;
-  color: var(--text-color);
-  border-bottom-left-radius: 5px;
+
+/* 상대방 말풍선 스타일 (흰색) */
+.their-message .message-bubble {
+  background-color: #ffffff;
+  color: #191919;
+  border: 1px solid #191919;
+  border-bottom-left-radius: 5px; /* 왼쪽 아래 모서리를 뾰족하게 */
 }
+
 .message-sender {
   font-size: 0.8em;
-  color: #6b7280;
+  color: #333;
   margin-bottom: 4px;
   padding: 0 5px;
 }
-.my-message .message-sender {
-  text-align: right;
-}
+
 .message-input-form {
   display: flex;
   padding: 10px;
-  border-top: 1px solid var(--light-gray);
+  border-top: 1px solid rgba(0,0,0,0.1);
+  background-color: #F8F8F8;
   gap: 10px;
   flex-shrink: 0;
 }
 .message-input-form textarea {
   flex-grow: 1;
   border: 1px solid var(--light-gray);
-  border-radius: 8px;
-  padding: 10px;
+  border-radius: 20px;
+  padding: 10px 15px;
   resize: none;
   font-family: inherit;
   font-size: 1em;
+  max-height: 100px;
 }
 
 /* 홈 페이지 스타일 */

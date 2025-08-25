@@ -7,23 +7,36 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 from backend import models, schemas, security
 
-# backend/crud.py 상단의 Firebase 초기화 부분을 아래 코드로 완전히 교체
-
+# 기존 Firebase 관련 import 및 초기화 코드를 모두 이 코드로 교체합니다.
 import firebase_admin
 from firebase_admin import credentials, messaging
 import os
+import json
 
-# Render의 Secret File 경로는 /etc/secrets/ 입니다.
-# 이 경로에 우리가 업로드한 파일이 위치하게 됩니다.
+# .env 파일이나 Render의 환경 변수에서 FIREBASE_CREDS_JSON 값을 가져옵니다.
+firebase_creds_json_str = os.getenv("FIREBASE_CREDS_JSON")
+# Render Secret File의 고정된 경로입니다.
 CERT_PATH = "/etc/secrets/bandicon-firebase-adminsdk.json"
 
-if os.path.exists(CERT_PATH) and not firebase_admin._apps:
+# Firebase 앱이 아직 초기화되지 않았을 때만 실행합니다.
+if not firebase_admin._apps:
+    cred = None
     try:
-        cred = credentials.Certificate(CERT_PATH)
-        firebase_admin.initialize_app(cred)
-        print("[INFO] Firebase initialized successfully from Secret File.")
+        if firebase_creds_json_str:
+            # 로컬 환경: .env 파일에 있는 JSON 문자열을 사용해 초기화합니다.
+            firebase_creds_dict = json.loads(firebase_creds_json_str)
+            cred = credentials.Certificate(firebase_creds_dict)
+            print("[INFO] Firebase initialized from .env variable.")
+        elif os.path.exists(CERT_PATH):
+            # 배포 환경: Render의 Secret File을 사용해 초기화합니다.
+            cred = credentials.Certificate(CERT_PATH)
+            print("[INFO] Firebase initialized from Secret File.")
+
+        if cred:
+            firebase_admin.initialize_app(cred)
+
     except Exception as e:
-        print(f"[ERROR] Failed to initialize Firebase from Secret File: {e}")
+        print(f"[ERROR] Failed to initialize Firebase: {e}")
 # ------------------------------------------------------------------
 
 
