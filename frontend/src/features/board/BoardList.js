@@ -54,9 +54,9 @@ const BoardList = ({ user }) => {
                         <tr style={{ borderBottom: '2px solid var(--light-gray)' }}>
                             {/* [수정] 제목 칸의 너비를 늘리고, 다른 칸의 너비를 비율로 조정합니다. */}
                             <th style={{ padding: '10px', textAlign: 'left', width: '55%' }}>제목</th>
-                            <th style={{ padding: '10px', width: '15%' }}>작성자</th>
-                            <th style={{ padding: '10px', width: '10%' }}>좋아요</th>
-                            <th style={{ padding: '10px', width: '20%' }}>작성일</th>
+                            <th style={{ padding: '10px', width: '15%', whiteSpace: 'nowrap' }}>작성자</th>
+                            <th style={{ padding: '10px', width: '10%', whiteSpace: 'nowrap' }}>좋아요</th>
+                            <th style={{ padding: '10px', width: '20%', whiteSpace: 'nowrap' }}>작성일</th>
                         </tr>
                     </thead>
                     <tbody>
